@@ -1,9 +1,23 @@
 import React, { useState, useEffect } from "react";
 import "./ProductList.css";
 import CartItem from "./CartItem";
+import {addItem} from './CartSlice'
+
 function ProductList({ onHomeClick }) {
   const [showCart, setShowCart] = useState(false);
   const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
+
+  const [addedToCart, setAddedToCart] = useState({}); // Estado para rastrear las plantas agregadas al carrito
+
+  const handleAddToCart = (product) => {
+    dispatch(addItem(product)); // Enviar la acción para agregar el producto al carrito (acción Redux)
+
+    setAddedToCart((prevState) => ({
+      // Actualizar el estado local para reflejar que el producto se ha añadido.
+      ...prevState, // Extienda el estado anterior para conservar las entradas existentes.
+      [product.name]: true, // Establezca el nombre del producto actual como una clave con el valor 'true' para marcarlo como agregado.
+    }));
+  };
 
   const plantsArray = [
     {
