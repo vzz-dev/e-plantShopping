@@ -25,6 +25,8 @@ export const CartSlice = createSlice({
         });
       }
     },
+
+
     removeItem: (state, action) => {
       // Extraemos el nombre del producto desde el payload
       const { name } = action.payload;
@@ -33,6 +35,8 @@ export const CartSlice = createSlice({
       // Nos quedamos con todos MENOS el que coincide con el nombre
       state.items = state.items.filter((item) => item.name !== name);
     },
+
+    
     updateQuantity: (state, action) => {
       // Extraemos el nombre del producto y la nueva cantidad desde el payload
       const { name, quantity } = action.payload;

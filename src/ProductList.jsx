@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./ProductList.css";
 import CartItem from "./CartItem";
-import {addItem} from './CartSlice'
-import {useDispatch} from 'react-redux'
+import { addItem } from "./CartSlice";
+import { useSelector, useDispatch } from "react-redux";
 
 function ProductList({ onHomeClick }) {
   const [showCart, setShowCart] = useState(false);
@@ -11,6 +11,13 @@ function ProductList({ onHomeClick }) {
   const [addedToCart, setAddedToCart] = useState({}); // Estado para rastrear las plantas agregadas al carrito
 
   const dispatch = useDispatch();
+  const CartItems = useSelector((state) => state.cart.items);
+
+  const calculateTotalQuantity = () => {
+    return CartItems
+      ? CartItems.reduce((total, item) => total + item.quantity, 0)
+      : 0;
+  };
 
   const handleAddToCart = (product) => {
     dispatch(addItem(product)); // Enviar la acción para agregar el producto al carrito (acción Redux)
@@ -331,11 +338,13 @@ function ProductList({ onHomeClick }) {
           <div>
             {" "}
             <a href="#" onClick={(e) => handleCartClick(e)} style={styleA}>
-              <h1 className="cart">
+              <h1
+                className="cart"
+                style={{ position: "relative", display: "inline-block" }}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 256 256"
-                  id="IconChangeColor"
                   height="68"
                   width="68"
                 >
@@ -346,12 +355,26 @@ function ProductList({ onHomeClick }) {
                     d="M42.3,72H221.7l-26.4,92.4A15.9,15.9,0,0,1,179.9,176H84.1a15.9,15.9,0,0,1-15.4-11.6L32.5,37.8A8,8,0,0,0,24.8,32H8"
                     fill="none"
                     stroke="#faf9f9"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    id="mainIconPathAttribute"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                   ></path>
                 </svg>
+
+                {/* Número dentro del carrito */}
+                <span
+                  style={{
+                    position: "absolute",
+                    top: "40%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    color: "white",
+                    fontWeight: "bold",
+                    fontSize: "16px",
+                  }}
+                >
+                  {calculateTotalQuantity()}
+                </span>
               </h1>
             </a>
           </div>
@@ -403,8 +426,11 @@ function ProductList({ onHomeClick }) {
                         <button
                           className="product-button"
                           onClick={() => handleAddToCart(plant)} // Ejecuta la funcion pasando la planta
+                          disabled={addedToCart[plant.name]} // Desactiva si ya fue agregado
                         >
-                          Add to Cart
+                          {addedToCart[plant.name]
+                            ? "Added to Cart"
+                            : "Add to Cart"}
                         </button>
                       </div>
                     ),
